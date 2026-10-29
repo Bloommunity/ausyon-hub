@@ -3,6 +3,7 @@ import type { Story, StoryReview } from '~/types/story'
 
 const toast = useToast()
 const { supabase, user, signInWithX } = useHubAuth()
+const colorMode = useColorMode()
 const searchInput = ref<HTMLInputElement | null>(null)
 const searchQuery = ref('')
 const activeFilter = ref('Everything')
@@ -33,6 +34,13 @@ const platformOptions = [
   { label: 'X (formerly Twitter)', value: 'X' },
   { label: 'Other', value: 'Other' }
 ]
+
+useHead({
+  meta: [{
+    name: 'theme-color',
+    content: computed(() => colorMode.value === 'dark' ? '#101f20' : '#f7f4ec')
+  }]
+})
 
 const stories = ref<Story[]>([
   {
@@ -350,13 +358,22 @@ function formatRelativeDate(date: string) {
           <a class="nav-link" href="#about">Our little corner</a>
         </nav>
         <div class="hidden items-center gap-3 md:flex">
+          <ClientOnly>
+            <UColorModeButton aria-label="Toggle dark mode" />
+          </ClientOnly>
           <UButton v-if="user" color="neutral" variant="ghost" icon="i-lucide-user-round" :label="currentUserLabel" />
           <UButton v-else color="neutral" variant="ghost" icon="i-simple-icons-x" label="Sign in" @click="requireXLogin" />
           <UButton class="submit-button" icon="i-lucide-plus" label="Share an AU" @click="requestStorySubmission" />
         </div>
-        <button class="mobile-menu-button md:hidden" :aria-expanded="mobileMenuOpen" aria-label="Toggle navigation" @click="mobileMenuOpen = !mobileMenuOpen">
-          <UIcon :name="mobileMenuOpen ? 'i-lucide-x' : 'i-lucide-menu'" class="size-5" />
-        </button>
+        <div class="flex items-center gap-2 md:hidden">
+          <ClientOnly>
+            <UColorModeButton aria-label="Toggle dark mode" />
+            <template #fallback><span class="color-mode-placeholder"></span></template>
+          </ClientOnly>
+          <button class="mobile-menu-button" :aria-expanded="mobileMenuOpen" aria-label="Toggle navigation" @click="mobileMenuOpen = !mobileMenuOpen">
+            <UIcon :name="mobileMenuOpen ? 'i-lucide-x' : 'i-lucide-menu'" class="size-5" />
+          </button>
+        </div>
       </div>
       <div v-if="mobileMenuOpen" class="mobile-menu md:hidden">
         <a href="#discover" @click="mobileMenuOpen = false">Discover</a>
@@ -726,6 +743,7 @@ function formatRelativeDate(date: string) {
 .star-buttons button { padding: 3px; background: transparent; }
 .star-filled { color: #d2a74e; fill: #d2a74e; }
 .star-empty { color: #c5c6b8; }
+.color-mode-placeholder { display: block; width: 36px; height: 36px; }
 @media (max-width: 760px) {
   .hero-paper { grid-template-columns: 1fr; }
   .hero-copy { padding: 43px 8% 30px; }

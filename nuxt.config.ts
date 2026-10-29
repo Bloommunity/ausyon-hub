@@ -3,6 +3,11 @@ export default defineNuxtConfig({
   modules: ['@nuxt/ui', '@vite-pwa/nuxt'],
   css: ['~/assets/css/main.css'],
   devtools: { enabled: true },
+  colorMode: {
+    preference: 'light',
+    fallback: 'light',
+    classSuffix: ''
+  },
   runtimeConfig: {
     public: {
       supabaseUrl: '',
@@ -47,7 +52,6 @@ export default defineNuxtConfig({
     }
   },
   ui: {
-    colorMode: false,
     theme: {
       colors: ['primary', 'secondary', 'success', 'info', 'warning', 'error']
     }
