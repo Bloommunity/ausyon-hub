@@ -7,6 +7,7 @@
 	const searchInput = ref<HTMLInputElement | null>(null);
 	const searchQuery = ref("");
 	const activeFilter = ref("Everything");
+	const activeAuType = ref("Everything");
 	const sortMode = ref("Freshly added");
 	const showSubmitModal = ref(false);
 	const showReviewModal = ref(false);
@@ -25,8 +26,10 @@
 		platform: "AO3",
 		url: "",
 		summary: "",
+		auType: "",
 		tags: "",
 	});
+	const auTypes = ["Angst", "Fluff"];
 	const platformValues = ["AO3", "Wattpad", "X"];
 	const platformFilters = [
 		{ label: "Everything", value: "Everything" },
@@ -40,6 +43,10 @@
 		{ label: "Wattpad", value: "Wattpad" },
 		{ label: "X (formerly Twitter)", value: "X" },
 		{ label: "Other", value: "Other" },
+	];
+	const auTypeOptions = [
+		{ label: "Choose an AU type (optional)", value: "" },
+		...auTypes.map((type) => ({ label: type, value: type })),
 	];
 
 	useHead({
@@ -160,6 +167,16 @@
 				(activeFilter.value === "Other"
 					? !platformValues.includes(story.platform)
 					: story.platform === activeFilter.value);
+			const matchesAuType =
+				activeAuType.value === "Everything" ||
+				story.tags.some((tag) => {
+					const normalizedTag = tag.toLowerCase();
+					const normalizedType = activeAuType.value.toLowerCase();
+					return (
+						normalizedTag === normalizedType ||
+						normalizedTag.startsWith(`${normalizedType} `)
+					);
+				});
 			const searchable = [
 				story.title,
 				story.fandom,
@@ -169,7 +186,11 @@
 			]
 				.join(" ")
 				.toLowerCase();
-			return matchesPlatform && (!query || searchable.includes(query));
+			return (
+				matchesPlatform &&
+				matchesAuType &&
+				(!query || searchable.includes(query))
+			);
 		});
 		return filtered.sort((a, b) =>
 			sortMode.value === "Most reviewed"
@@ -389,6 +410,17 @@
 			});
 			return;
 		}
+		const extraTags = storyForm.tags
+			.split(",")
+			.map((tag) => tag.trim())
+			.filter(Boolean);
+		const storyTags = [
+			...(storyForm.auType ? [storyForm.auType] : []),
+			...extraTags.filter(
+				(tag) =>
+					tag.toLowerCase() !== storyForm.auType.trim().toLowerCase(),
+			),
+		].slice(0, 5);
 		isSubmitting.value = true;
 		const { data, error } = await supabase.value
 			.from("stories")
@@ -399,11 +431,7 @@
 				platform: storyForm.platform,
 				url: url.toString(),
 				summary: storyForm.summary.trim(),
-				tags: storyForm.tags
-					.split(",")
-					.map((tag) => tag.trim())
-					.filter(Boolean)
-					.slice(0, 5),
+				tags: storyTags,
 				user_id: user.value.id,
 			})
 			.select(
@@ -439,6 +467,7 @@
 			platform: "AO3",
 			url: "",
 			summary: "",
+			auType: "",
 			tags: "",
 		});
 		toast.add({
@@ -653,16 +682,35 @@
 				</div>
 
 				<div class="filter-row">
-					<div class="platform-filters" aria-label="Filter by platform">
-						<button
-							v-for="filter in platformFilters"
-							:key="filter.value"
-							class="filter-chip"
-							:class="{ 'filter-chip-active': activeFilter === filter.value }"
-							@click="activeFilter = filter.value"
-						>
-							{{ filter.label }}
-						</button>
+					<div class="filter-groups">
+						<div class="filter-group" role="group" aria-label="Filter by platform">
+							<span class="filter-group-label">Platform</span>
+							<div class="platform-filters">
+								<button
+									v-for="filter in platformFilters"
+									:key="filter.value"
+									class="filter-chip"
+									:class="{ 'filter-chip-active': activeFilter === filter.value }"
+									@click="activeFilter = filter.value"
+								>
+									{{ filter.label }}
+								</button>
+							</div>
+						</div>
+						<div class="filter-group" role="group" aria-label="Filter by AU type">
+							<span class="filter-group-label">AU type</span>
+							<div class="platform-filters">
+								<button
+									v-for="type in ['Everything', ...auTypes]"
+									:key="type"
+									class="filter-chip"
+									:class="{ 'filter-chip-active': activeAuType === type }"
+									@click="activeAuType = type"
+								>
+									{{ type === "Everything" ? "All types" : type }}
+								</button>
+							</div>
+						</div>
 					</div>
 					<span class="results-label"
 						>{{ filteredStories.length }} stories found</span
@@ -924,6 +972,12 @@
 							placeholder="No spoilers, just a little invitation..."
 							class="w-full"
 					/></UFormField>
+					<UFormField label="Type of AU" hint="Optional · choose a feeling"
+						><USelect
+							v-model="storyForm.auType"
+							:items="auTypeOptions"
+							class="w-full"
+						/></UFormField>
 					<UFormField label="Tags" hint="Optional · comma separated"
 						><UInput
 							v-model="storyForm.tags"
@@ -1026,8 +1080,9 @@
 		object-fit: contain;
 	}
 	.brand-word-logo {
-		width: 150px;
-		height: 38px;
+		width: clamp(150px, 17vw, 210px);
+		height: auto;
+		max-height: 42px;
 		object-fit: contain;
 	}
 	.nav-link {
@@ -1484,6 +1539,22 @@
 		align-items: center;
 		justify-content: space-between;
 		gap: 12px;
+	}
+	.filter-groups {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 12px 24px;
+	}
+	.filter-group {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+	.filter-group-label {
+		color: #788580;
+		font-size: 10px;
+		font-weight: 700;
+		white-space: nowrap;
 	}
 	.platform-filters {
 		display: flex;
@@ -2127,8 +2198,7 @@
 			height: 40px;
 		}
 		.brand-word-logo {
-			width: 120px;
-			height: 34px;
+			width: clamp(120px, 35vw, 160px);
 		}
 		.hero-shell {
 			padding-top: 17px;

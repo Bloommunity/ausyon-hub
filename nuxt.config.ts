@@ -10,15 +10,14 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
+      siteUrl: '',
       supabaseUrl: '',
       supabaseAnonKey: ''
     }
   },
   app: {
     head: {
-      title: 'AUsyon Hub — a little corner for alternate universes',
       meta: [
-        { name: 'description', content: 'Find, share, and leave a little love for alternate universe stories from across the web.' },
         { name: 'theme-color', content: '#f7f4ec' },
         { name: 'mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-capable', content: 'yes' }
