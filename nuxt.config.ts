@@ -1,0 +1,56 @@
+export default defineNuxtConfig({
+  publicDir: 'public/',
+  modules: ['@nuxt/ui', '@vite-pwa/nuxt'],
+  css: ['~/assets/css/main.css'],
+  devtools: { enabled: true },
+  runtimeConfig: {
+    public: {
+      supabaseUrl: '',
+      supabaseAnonKey: ''
+    }
+  },
+  app: {
+    head: {
+      title: 'AUsyon Hub — a little corner for alternate universes',
+      meta: [
+        { name: 'description', content: 'Find, share, and leave a little love for alternate universe stories from across the web.' },
+        { name: 'theme-color', content: '#f7f4ec' },
+        { name: 'mobile-web-app-capable', content: 'yes' },
+        { name: 'apple-mobile-web-app-capable', content: 'yes' }
+      ],
+      link: [
+        { rel: 'icon', type: 'image/png', href: '/favicon.png' },
+        { rel: 'apple-touch-icon', href: '/favicon.png' }
+      ]
+    }
+  },
+  pwa: {
+    registerType: 'autoUpdate',
+    manifest: {
+      name: 'AUsyon Hub',
+      short_name: 'AUsyon',
+      description: 'A little corner for alternate universe stories.',
+      theme_color: '#f7f4ec',
+      background_color: '#f7f4ec',
+      display: 'standalone',
+      start_url: '/',
+      icons: [
+        { src: '/favicon.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
+      ]
+    },
+    workbox: {
+      navigateFallback: '/',
+      globPatterns: ['**/*.{js,css,html,png,svg,woff2}']
+    },
+    devOptions: {
+      enabled: false
+    }
+  },
+  ui: {
+    colorMode: false,
+    theme: {
+      colors: ['primary', 'secondary', 'success', 'info', 'warning', 'error']
+    }
+  },
+  compatibilityDate: '2025-03-01'
+})

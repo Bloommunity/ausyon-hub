@@ -1,0 +1,57 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme {
+  --font-sans: "DM Sans", "Avenir Next", Avenir, sans-serif;
+  --font-serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  --color-paper: #f7f4ec;
+  --color-paper-dark: #eee9dc;
+  --color-ink: #173b3d;
+  --color-ink-soft: #496264;
+  --color-teal: #287c7b;
+  --color-teal-light: #dcebe5;
+  --color-coral: #d0785f;
+  --color-sunshine: #e8bb64;
+  --color-line: #e7e0d2;
+}
+
+:root {
+  --ui-primary: var(--ui-color-primary-700);
+  --ui-radius: 0.75rem;
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--color-paper);
+}
+
+body {
+  margin: 0;
+  color: var(--color-ink);
+  background:
+    radial-gradient(ellipse at 2% 20%, rgb(232 187 100 / 8%), transparent 29rem),
+    var(--color-paper);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+a,
+input,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  color: var(--color-paper);
+  background: var(--color-teal);
+}
+
+.serif {
+  font-family: var(--font-serif);
+}
+
+.paper-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E");
+}
