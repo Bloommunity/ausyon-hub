@@ -41,6 +41,7 @@ html.dark .site-header {
 }
 
 html.dark .brand-logo,
+html.dark .brand-word-logo,
 html.dark .about-logo {
   filter: brightness(0) invert(.9);
 }
