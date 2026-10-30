@@ -734,8 +734,9 @@
 	}
 	.story-actions {
 		display: flex;
+		flex-wrap: wrap;
 		align-items: center;
-		gap: 16px;
+		gap: 8px 14px;
 	}
 	.share-menu {
 		position: relative;

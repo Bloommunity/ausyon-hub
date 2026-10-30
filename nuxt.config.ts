@@ -1,7 +1,7 @@
 export default defineNuxtConfig({
   publicDir: 'public/',
   modules: ['@nuxt/ui', '@vite-pwa/nuxt'],
-  css: ['~/assets/css/main.css', '~/assets/css/home.css'],
+  css: ['~/assets/css/main.css', '~/assets/css/home.css', '~/assets/css/archive.css'],
   devtools: { enabled: true },
   colorMode: {
     preference: 'light',

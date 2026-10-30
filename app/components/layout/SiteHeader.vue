@@ -1,8 +1,13 @@
 <script setup lang="ts">
-defineProps<{
+withDefaults(defineProps<{
   isSignedIn: boolean
   userLabel: string
-}>()
+  showShareAction?: boolean
+  activePage?: 'discover' | 'archive'
+}>(), {
+  showShareAction: true,
+  activePage: 'discover'
+})
 
 const emit = defineEmits<{
   share: []
@@ -20,9 +25,8 @@ function requestShare() {
   <header class="site-header">
     <div class="site-header-inner mx-auto h-[82px] max-w-[1320px] px-5 sm:px-8">
       <nav class="site-nav hidden items-center md:flex" aria-label="Main navigation">
-        <a class="nav-link nav-link-active" href="#discover">Discover</a>
-        <a class="nav-link" href="#most-loved">Most loved</a>
-        <a class="nav-link" href="#about">Our little corner</a>
+        <a class="nav-link" :class="{ 'nav-link-active': activePage === 'discover' }" href="/#discover">Discover</a>
+        <a class="nav-link" :class="{ 'nav-link-active': activePage === 'archive' }" href="/archive">AO3 archive</a>
       </nav>
       <a href="/" class="brand-lockup" aria-label="AUsyon Hub home">
         <img src="/images/brand/ausyon-hub-logo-horizontal.png" alt="AUsyon Hub" class="brand-word-logo">
@@ -39,6 +43,7 @@ function requestShare() {
           :label="userLabel"
         />
         <UButton
+          v-if="showShareAction"
           class="submit-button"
           icon="i-lucide-plus"
           label="Share an AU"
@@ -63,10 +68,10 @@ function requestShare() {
       </div>
     </div>
     <div v-if="mobileMenuOpen" class="mobile-menu md:hidden">
-      <a href="#discover" @click="mobileMenuOpen = false">Discover</a>
-      <a href="#most-loved" @click="mobileMenuOpen = false">Most loved</a>
-      <a href="#about" @click="mobileMenuOpen = false">Our little corner</a>
+      <a href="/#discover" @click="mobileMenuOpen = false">Discover</a>
+      <a href="/archive" @click="mobileMenuOpen = false">AO3 archive</a>
       <UButton
+        v-if="showShareAction"
         block
         class="submit-button"
         icon="i-lucide-plus"

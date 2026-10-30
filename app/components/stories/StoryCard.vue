@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import type { Story, StoryReview } from '~/types/story'
-import { formatRelativeDate, getAuType, getOtherStoryTags, getStoryShareLinks } from '~/utils/story-presentation'
+import {
+  formatRelativeDate,
+  getAuType,
+  getOtherStoryTags,
+  getStoryShareLinks
+} from '~/utils/story-presentation'
 
 const props = defineProps<{
   story: Story
@@ -16,7 +21,6 @@ const emit = defineEmits<{
   review: [story: Story]
   toggleReviews: [story: Story]
 }>()
-
 const toast = useToast()
 
 async function shareStory() {

@@ -1,0 +1,134 @@
+.archive-main {
+  min-height: calc(100vh - 205px);
+}
+
+.archive-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--color-ink-soft);
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.archive-back-link:hover {
+  color: var(--color-teal);
+}
+
+.archive-intro {
+  max-width: 680px;
+  margin: 48px auto 30px;
+  text-align: center;
+}
+
+.archive-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-coral);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.archive-intro h1 {
+  margin: 18px 0 12px;
+  color: var(--color-ink);
+  font-size: clamp(36px, 6vw, 58px);
+  letter-spacing: -0.045em;
+  line-height: 1.05;
+}
+
+.archive-intro h1 em {
+  color: var(--color-teal);
+  font-weight: 500;
+}
+
+.archive-intro > p {
+  max-width: 560px;
+  margin: 0 auto;
+  color: var(--color-ink-soft);
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.archive-search-panel {
+  display: grid;
+  gap: 18px;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 24px;
+  border: 1px solid var(--color-line);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--color-paper) 92%, white);
+  box-shadow: 0 12px 36px rgb(23 59 61 / 6%);
+}
+
+.archive-search-note {
+  display: flex;
+  gap: 6px;
+  margin: -7px 0 0;
+  color: var(--color-ink-soft);
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.archive-validation {
+  margin: -12px 0 0;
+  color: #a64b3c;
+  font-size: 12px;
+}
+
+.archive-search-button {
+  justify-self: start;
+  min-height: 42px;
+}
+
+.archive-result {
+  max-width: 680px;
+  margin: 20px auto 0;
+}
+
+.archive-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  max-width: 680px;
+  margin: 26px auto 0;
+  padding: 16px 18px;
+  border: 1px solid var(--color-line);
+  color: var(--color-ink-soft);
+  background: var(--color-paper-dark);
+}
+
+.archive-note > svg {
+  flex: 0 0 auto;
+  margin-top: 1px;
+  color: var(--color-teal);
+}
+
+.archive-note p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+@media (max-width: 520px) {
+  .archive-main {
+    padding-top: 28px;
+  }
+
+  .archive-intro {
+    margin-top: 38px;
+    text-align: left;
+  }
+
+  .archive-search-panel {
+    padding: 18px;
+  }
+}
+
+html.dark .archive-search-panel {
+  background: var(--color-paper-dark);
+}

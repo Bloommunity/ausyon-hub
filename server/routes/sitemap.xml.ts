@@ -10,6 +10,9 @@ export default defineEventHandler((event) => {
   <url>
     <loc>${canonicalUrl.href}</loc>
   </url>
+  <url>
+    <loc>${new URL('/archive', siteUrl).href}</loc>
+  </url>
 </urlset>
 `
 })
