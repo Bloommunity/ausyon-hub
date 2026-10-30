@@ -625,24 +625,24 @@
 	<div class="min-h-screen">
 		<header class="site-header">
 			<div
-				class="mx-auto flex h-[82px] max-w-[1320px] items-center justify-between px-5 sm:px-8"
+				class="site-header-inner mx-auto h-[82px] max-w-[1320px] px-5 sm:px-8"
 			>
-				<a href="#" class="brand-lockup" aria-label="AUsyon Hub home">
-					<img
-						src="/assets/ausyon-hub-word-logo.png"
-						alt="AUsyon Hub"
-						class="brand-word-logo"
-					/>
-				</a>
 				<nav
-					class="hidden items-center gap-8 md:flex"
+					class="site-nav hidden items-center md:flex"
 					aria-label="Main navigation"
 				>
 					<a class="nav-link nav-link-active" href="#discover">Discover</a>
 					<a class="nav-link" href="#most-loved">Most loved</a>
 					<a class="nav-link" href="#about">Our little corner</a>
 				</nav>
-				<div class="hidden items-center gap-3 md:flex">
+				<a href="#" class="brand-lockup" aria-label="AUsyon Hub home">
+					<img
+						src="/assets/ausyon-hub-logo-horizontal.png"
+						alt="AUsyon Hub"
+						class="brand-word-logo"
+					/>
+				</a>
+				<div class="site-header-actions hidden items-center md:flex">
 					<ClientOnly>
 						<UColorModeButton aria-label="Toggle dark mode" />
 					</ClientOnly>
@@ -654,27 +654,13 @@
 						:label="currentUserLabel"
 					/>
 					<UButton
-						v-else
-						color="neutral"
-						variant="ghost"
-						icon="i-simple-icons-x"
-						label="Sign in"
-						@click="requireXLogin"
-					/>
-					<UButton
 						class="submit-button"
 						icon="i-lucide-plus"
 						label="Share an AU"
 						@click="requestStorySubmission"
 					/>
 				</div>
-				<div class="flex items-center gap-2 md:hidden">
-					<ClientOnly>
-						<UColorModeButton aria-label="Toggle dark mode" />
-						<template #fallback
-							><span class="color-mode-placeholder"></span
-						></template>
-					</ClientOnly>
+				<div class="mobile-header-menu flex items-center md:hidden">
 					<button
 						class="mobile-menu-button"
 						:aria-expanded="mobileMenuOpen"
@@ -687,19 +673,19 @@
 						/>
 					</button>
 				</div>
+				<div class="mobile-header-theme flex items-center md:hidden">
+					<ClientOnly>
+						<UColorModeButton aria-label="Toggle dark mode" />
+						<template #fallback
+							><span class="color-mode-placeholder"></span
+						></template>
+					</ClientOnly>
+				</div>
 			</div>
 			<div v-if="mobileMenuOpen" class="mobile-menu md:hidden">
 				<a href="#discover" @click="mobileMenuOpen = false">Discover</a>
 				<a href="#most-loved" @click="mobileMenuOpen = false">Most loved</a>
 				<a href="#about" @click="mobileMenuOpen = false">Our little corner</a>
-				<UButton
-					block
-					color="neutral"
-					variant="outline"
-					icon="i-simple-icons-x"
-					label="Sign in with X"
-					@click="requireXLogin"
-				/>
 				<UButton
 					block
 					class="submit-button"
@@ -1290,7 +1276,19 @@
 		background: rgb(247 244 236 / 88%);
 		backdrop-filter: blur(14px);
 	}
+	.site-header-inner {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+		align-items: center;
+	}
+	.site-nav {
+		grid-column: 1;
+		justify-self: start;
+		gap: 16px;
+	}
 	.brand-lockup {
+		grid-column: 2;
+		grid-row: 1;
 		display: flex;
 		align-items: center;
 		gap: 9px;
@@ -1307,6 +1305,32 @@
 		height: auto;
 		max-height: 42px;
 		object-fit: contain;
+	}
+	.site-header-actions {
+		grid-column: 3;
+		justify-self: end;
+		gap: 8px;
+	}
+	.mobile-header-menu {
+		grid-column: 1;
+		grid-row: 1;
+		justify-self: start;
+	}
+	.mobile-header-theme {
+		grid-column: 3;
+		grid-row: 1;
+		justify-self: end;
+	}
+	@media (min-width: 768px) and (max-width: 900px) {
+		.site-nav {
+			gap: 12px;
+		}
+		.brand-word-logo {
+			width: clamp(130px, 16vw, 150px);
+		}
+		.site-header-actions {
+			gap: 4px;
+		}
 	}
 	.nav-link {
 		position: relative;
