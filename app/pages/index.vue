@@ -29,10 +29,10 @@ const {
 			>
 				<div class="section-heading">
 					<div>
-						<div class="section-kicker">THE COMMUNITY BOOKSHELF</div>
-						<h2 class="serif">Find a story to <em>fall into.</em></h2>
+						<div class="section-kicker">THE WORLD OF WHAT-IFS</div>
+						<h2 class="serif">Find a story to <em>step into.</em></h2>
 						<p class="section-subtitle">
-							A few doors into other worlds, picked by the people who love them.
+							Each AU offers another path, another possibility, another world to wander through.
 						</p>
 					</div>
 					<div class="collection-count">
@@ -73,9 +73,9 @@ const {
 							v-if="!filteredStories.length && !isLoading"
 							class="empty-state"
 						>
-							<span class="serif">No stories on this page yet.</span>
+							<span class="serif">No worlds to wander into just yet.</span>
 							<p>
-								Try another search, or be the first to leave one on the shelf.
+								Try another search, or share the first what-if in this collection.
 							</p>
 							<UButton
 								class="submit-button"

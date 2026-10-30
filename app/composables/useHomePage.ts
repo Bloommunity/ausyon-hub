@@ -378,8 +378,8 @@ export function useHomePage() {
 			tags: "",
 		});
 		toast.add({
-			title: "Your AU is on the shelf",
-			description: "The community can find and review it now.",
+			title: "Your imagined world is on the shelf",
+			description: "Readers can step into it and leave a note.",
 			color: "success",
 		});
 	}

@@ -35,7 +35,7 @@ const emit = defineEmits<{
     </div>
     <div class="shelf-note paper-grain">
       <span class="note-illustration">“</span>
-      <p class="serif">Somewhere, someone is writing the story you didn’t know you needed.</p>
+      <p class="serif">Every what-if is a doorway to a world waiting to be found.</p>
       <span class="note-credit">A LITTLE REMINDER FROM US</span>
       <span class="note-spark">✳</span>
     </div>

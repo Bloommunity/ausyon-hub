@@ -29,17 +29,17 @@ const announcementImageFailed = ref(false)
 <template>
   <UModal
     v-model:open="submitOpen"
-    title="Leave one on the shelf"
-    description="Share a link to an AU you love."
+    title="Share an imagined world"
+    description="Help readers find an AU that takes a beloved story somewhere new."
   >
     <template #body>
       <div class="modal-intro">
         <span class="modal-spark">✳</span>
-        <p>A good story deserves to be found.</p>
+        <p>Every what-if deserves a doorway.</p>
       </div>
       <div class="modal-form">
         <UFormField label="Story title" required>
-          <UInput v-model="storyForm.title" maxlength="160" placeholder="The name on the cover" class="w-full" />
+          <UInput v-model="storyForm.title" maxlength="160" placeholder="Name this imagined world" class="w-full" />
         </UFormField>
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <UFormField label="Fandom" required>
@@ -52,12 +52,12 @@ const announcementImageFailed = ref(false)
         <UFormField label="Story link" required>
           <UInput v-model="storyForm.url" type="url" placeholder="https://..." icon="i-lucide-link" class="w-full" />
         </UFormField>
-        <UFormField label="A little about it" required>
+        <UFormField label="Invite readers in" required>
           <UTextarea
             v-model="storyForm.summary"
             maxlength="600"
             :rows="3"
-            placeholder="No spoilers, just a little invitation..."
+            placeholder="Offer a spoiler-free glimpse of this world..."
             class="w-full"
           />
         </UFormField>
@@ -75,7 +75,7 @@ const announcementImageFailed = ref(false)
         class="submit-button"
         :loading="isSubmitting"
         icon="i-lucide-sparkles"
-        label="Add to the shelf"
+        label="Add to the story shelf"
         @click="emit('submitStory')"
       />
     </template>

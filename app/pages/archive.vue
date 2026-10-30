@@ -26,7 +26,7 @@ useHead({
   title: 'AO3 Archive Search | AUsyon Hub',
   meta: [{
     name: 'description',
-    content: 'Search for AO3 works or check whether a work has a saved Wayback Machine copy.'
+    content: 'Find an AO3 story and see whether the Wayback Machine saved a glimpse of its imagined world.'
   }]
 })
 
@@ -86,22 +86,22 @@ function formatCaptureDate(timestamp: string) {
     <main class="archive-main mx-auto max-w-[920px] px-5 py-12 sm:px-8 sm:py-20">
       <NuxtLink to="/" class="archive-back-link">
         <UIcon name="i-lucide-arrow-left" class="size-4" />
-        Back to the bookshelf
+        Back to the story shelf
       </NuxtLink>
 
       <section class="archive-intro">
-        <span class="archive-kicker"><UIcon name="i-lucide-book-open" class="size-4" /> AUsyon Hub · reader tools</span>
+        <span class="archive-kicker"><UIcon name="i-lucide-book-open" class="size-4" /> AUsyon Hub · Where imagined worlds feel real</span>
         <h1 class="serif">Find a story in the <em>archive.</em></h1>
         <p>
-          Looking for an AO3 work? Search by title or author, or paste a work link to check
-          for a saved Wayback Machine copy.
+          Looking for an AO3 work? Search by title or author, or paste its link to see whether
+          the Wayback Machine saved a glimpse of that imagined world.
         </p>
       </section>
 
       <form class="archive-search-panel" @submit.prevent="searchArchive">
         <UFormField
           label="Work title, author, or AO3 link"
-          hint="Search terms open indexed results; an AO3 work URL checks for a saved copy."
+          hint="Search by title or author, or paste an AO3 work link to check for a saved copy."
         >
           <UInput
             v-model="query"

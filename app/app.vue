@@ -4,8 +4,8 @@ const requestUrl = useRequestURL()
 const siteUrl = computed(() => new URL(config.public.siteUrl || requestUrl.origin).origin)
 const canonicalUrl = computed(() => new URL('/', siteUrl.value).href)
 const siteName = 'AUsyon Hub'
-const pageTitle = 'AUsyon Hub | Discover Alternate Universe Stories'
-const description = 'Discover, share, and review alternate universe stories from across AO3, Wattpad, and more.'
+const pageTitle = 'AUsyon Hub | Where Imagined Worlds Feel Real'
+const description = 'Discover, share, and review alternate universe stories—where every what-if opens a world of its own.'
 const imageUrl = computed(() => new URL('/images/social/og-image.png', siteUrl.value).href)
 
 useSeoMeta({
