@@ -31,12 +31,27 @@ create table if not exists public.reviews (
   unique (story_id, user_id)
 );
 
+create table if not exists public.site_announcements (
+  id uuid primary key default gen_random_uuid(),
+  title text not null check (char_length(title) between 1 and 160),
+  body text not null check (char_length(body) between 1 and 2000),
+  starts_at timestamptz not null,
+  ends_at timestamptz not null,
+  image_url text check (image_url is null or image_url ~ '^https?://'),
+  created_at timestamptz not null default now(),
+  check (ends_at > starts_at)
+);
+
 create index if not exists stories_created_at_idx on public.stories (created_at desc);
 create index if not exists stories_review_count_idx on public.stories (review_count desc);
 create index if not exists reviews_story_id_idx on public.reviews (story_id, created_at desc);
 
 alter table public.stories enable row level security;
 alter table public.reviews enable row level security;
+alter table public.site_announcements enable row level security;
+
+revoke all on table public.site_announcements from anon, authenticated;
+grant select on table public.site_announcements to anon, authenticated;
 
 create policy "Stories are visible to everyone"
   on public.stories for select using (true);
@@ -47,6 +62,10 @@ create policy "Reviews are visible to everyone"
   on public.reviews for select using (true);
 create policy "Authenticated users can leave one review per story"
   on public.reviews for insert to authenticated with check (auth.uid() = user_id);
+
+create policy "Active announcements are visible to everyone"
+  on public.site_announcements for select to anon, authenticated
+  using (starts_at <= now() and ends_at > now());
 
 create or replace function public.refresh_story_review_stats()
 returns trigger

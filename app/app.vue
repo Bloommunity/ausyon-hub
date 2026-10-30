@@ -6,7 +6,7 @@ const canonicalUrl = computed(() => new URL('/', siteUrl.value).href)
 const siteName = 'AUsyon Hub'
 const pageTitle = 'AUsyon Hub | Discover Alternate Universe Stories'
 const description = 'Discover, share, and review alternate universe stories from across AO3, Wattpad, and more.'
-const imageUrl = computed(() => new URL('/logo.png', siteUrl.value).href)
+const imageUrl = computed(() => new URL('/og-image.png', siteUrl.value).href)
 
 useSeoMeta({
   title: pageTitle,
@@ -18,6 +18,10 @@ useSeoMeta({
   ogUrl: canonicalUrl,
   ogImage: imageUrl,
   ogImageAlt: 'AUsyon Hub logo',
+  ogImageSecureUrl: imageUrl,
+  ogImageType: 'image/png',
+  ogImageWidth: 1200,
+  ogImageHeight: 630,
   twitterCard: 'summary_large_image',
   twitterTitle: pageTitle,
   twitterDescription: description,

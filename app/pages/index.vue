@@ -1,6 +1,13 @@
 <script setup lang="ts">
 	import type { Story, StoryReview } from "~/types/story";
 
+	interface SiteAnnouncement {
+		id: string;
+		title: string;
+		body: string;
+		imageUrl: string | null;
+	}
+
 	const toast = useToast();
 	const { supabase, user, signInWithX } = useHubAuth();
 	const colorMode = useColorMode();
@@ -11,6 +18,9 @@
 	const sortMode = ref("Freshly added");
 	const showSubmitModal = ref(false);
 	const showReviewModal = ref(false);
+	const showAnnouncementModal = ref(false);
+	const announcement = ref<SiteAnnouncement | null>(null);
+	const announcementImageFailed = ref(false);
 	const selectedStory = ref<Story | null>(null);
 	const expandedReviewsFor = ref<string | null>(null);
 	const reviewEntries = ref<StoryReview[]>([]);
@@ -282,9 +292,75 @@
 		);
 	};
 
+	function isAnnouncementSnoozed(id: string) {
+		const key = `ausyon-announcement-snoozed-${id}`;
+		try {
+			const snoozedUntil = Number(localStorage.getItem(key));
+			if (Number.isFinite(snoozedUntil) && snoozedUntil > Date.now()) {
+				return true;
+			}
+			localStorage.removeItem(key);
+			return false;
+		} catch (error) {
+			toast.add({
+				title: "Could not check announcement snooze",
+				description:
+					error instanceof Error ? error.message : "Please check browser storage.",
+				color: "error",
+			});
+			return false;
+		}
+	}
+
+	function snoozeAnnouncement() {
+		if (!announcement.value) return;
+		try {
+			localStorage.setItem(
+				`ausyon-announcement-snoozed-${announcement.value.id}`,
+				String(Date.now() + 24 * 60 * 60 * 1000),
+			);
+			showAnnouncementModal.value = false;
+		} catch (error) {
+			toast.add({
+				title: "Could not snooze announcement",
+				description:
+					error instanceof Error ? error.message : "Please try again.",
+				color: "error",
+			});
+		}
+	}
+
+	async function loadActiveAnnouncement() {
+		if (!supabase.value) return;
+		const { data, error } = await supabase.value
+			.from("site_announcements")
+			.select("id,title,body,image_url")
+			.order("starts_at", { ascending: false })
+			.limit(1)
+			.maybeSingle();
+		if (error) {
+			toast.add({
+				title: "Could not load announcement",
+				description: error.message,
+				color: "error",
+			});
+			return;
+		}
+		if (!data) return;
+		announcement.value = {
+			id: data.id,
+			title: data.title,
+			body: data.body,
+			imageUrl: data.image_url,
+		};
+		announcementImageFailed.value = false;
+		showAnnouncementModal.value = !isAnnouncementSnoozed(data.id);
+	}
+
 	onMounted(async () => {
 		canUseNativeShare.value = typeof navigator.share === "function";
 		if (!supabase.value) return;
+		await loadActiveAnnouncement();
 		isLoading.value = true;
 		const { data, error } = await supabase.value
 			.from("stories")
@@ -1186,6 +1262,34 @@
 					icon="i-lucide-send"
 					label="Leave my note"
 					@click="submitReview"
+				/>
+			</template>
+		</UModal>
+
+		<UModal
+			v-model:open="showAnnouncementModal"
+			:title="announcement?.title ?? 'A note from AUsyon Hub'"
+			description="An update from the AUsyon Hub community."
+		>
+			<template #body>
+				<div class="announcement-content">
+					<img
+						v-if="announcement?.imageUrl && !announcementImageFailed"
+						:src="announcement.imageUrl"
+						:alt="announcement.title"
+						class="announcement-thumbnail"
+						@error="announcementImageFailed = true"
+					/>
+					<p class="announcement-body">{{ announcement?.body }}</p>
+				</div>
+			</template>
+			<template #footer>
+				<UButton
+					color="neutral"
+					variant="outline"
+					icon="i-lucide-bell-off"
+					label="Snooze for 1 day"
+					@click="snoozeAnnouncement"
 				/>
 			</template>
 		</UModal>
@@ -2256,6 +2360,23 @@
 	.modal-form {
 		display: grid;
 		gap: 15px;
+	}
+	.announcement-content {
+		display: grid;
+		gap: 16px;
+	}
+	.announcement-thumbnail {
+		width: 100%;
+		max-height: 260px;
+		border-radius: 8px;
+		object-fit: cover;
+	}
+	.announcement-body {
+		margin: 0;
+		color: var(--color-ink-soft);
+		font-size: 13px;
+		line-height: 1.7;
+		white-space: pre-line;
 	}
 	.review-modal-story {
 		margin-bottom: 20px;
