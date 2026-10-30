@@ -1,7 +1,7 @@
 export default defineNuxtConfig({
   publicDir: 'public/',
   modules: ['@nuxt/ui', '@vite-pwa/nuxt'],
-  css: ['~/assets/css/main.css'],
+  css: ['~/assets/css/main.css', '~/assets/css/home.css'],
   devtools: { enabled: true },
   colorMode: {
     preference: 'light',
@@ -23,8 +23,8 @@ export default defineNuxtConfig({
         { name: 'apple-mobile-web-app-capable', content: 'yes' }
       ],
       link: [
-        { rel: 'icon', type: 'image/png', href: '/favicon.png' },
-        { rel: 'apple-touch-icon', href: '/favicon.png' }
+        { rel: 'icon', type: 'image/png', href: '/icons/favicon.png' },
+        { rel: 'apple-touch-icon', href: '/icons/favicon.png' }
       ]
     }
   },
@@ -39,7 +39,7 @@ export default defineNuxtConfig({
       display: 'standalone',
       start_url: '/',
       icons: [
-        { src: '/favicon.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
+        { src: '/icons/favicon.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
       ]
     },
     workbox: {

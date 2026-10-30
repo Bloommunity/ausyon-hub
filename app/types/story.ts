@@ -21,3 +21,13 @@ export interface StoryReview {
   comment: string
   createdAt: string
 }
+
+export interface StorySubmissionForm {
+  title: string
+  fandom: string
+  platform: string
+  url: string
+  summary: string
+  auType: string
+  tags: string
+}

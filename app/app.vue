@@ -6,7 +6,7 @@ const canonicalUrl = computed(() => new URL('/', siteUrl.value).href)
 const siteName = 'AUsyon Hub'
 const pageTitle = 'AUsyon Hub | Discover Alternate Universe Stories'
 const description = 'Discover, share, and review alternate universe stories from across AO3, Wattpad, and more.'
-const imageUrl = computed(() => new URL('/og-image.png', siteUrl.value).href)
+const imageUrl = computed(() => new URL('/images/social/og-image.png', siteUrl.value).href)
 
 useSeoMeta({
   title: pageTitle,
