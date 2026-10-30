@@ -20,6 +20,7 @@
 	const isLoading = ref(false);
 	const reviewRating = ref(0);
 	const reviewComment = ref("");
+	const canUseNativeShare = ref(false);
 	const storyForm = reactive({
 		title: "",
 		fandom: "",
@@ -159,6 +160,65 @@
 		meta_k: () => searchInput.value?.focus(),
 	});
 
+	function getStoryShareLinks(story: Story) {
+		const title = `${story.title} — ${story.fandom}`;
+		const message = `${title}\n${story.summary}\n${story.url}`;
+		return [
+			{
+				label: "X",
+				href: `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(story.url)}`,
+			},
+			{
+				label: "Facebook",
+				href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(story.url)}`,
+			},
+			{
+				label: "WhatsApp",
+				href: `https://wa.me/?text=${encodeURIComponent(message)}`,
+			},
+			{
+				label: "Email",
+				href: `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(message)}`,
+			},
+		];
+	}
+
+	async function shareStory(story: Story) {
+		try {
+			await navigator.share({
+				title: `${story.title} — ${story.fandom}`,
+				text: story.summary,
+				url: story.url,
+			});
+		} catch (error) {
+			if (error instanceof DOMException && error.name === "AbortError") return;
+			toast.add({
+				title: "Could not share this story",
+				description:
+					error instanceof Error ? error.message : "Please try again.",
+				color: "error",
+			});
+		}
+	}
+
+	async function copyStoryLink(story: Story) {
+		try {
+			await navigator.clipboard.writeText(story.url);
+			toast.add({
+				title: "Story link copied",
+				description: "Share it anywhere you like.",
+				color: "success",
+			});
+		} catch (error) {
+			toast.add({
+				title: "Could not copy the story link",
+				description:
+					error instanceof Error ? error.message : "Please try again.",
+				color: "error",
+			});
+		}
+	}
+
 	const filteredStories = computed(() => {
 		const query = searchQuery.value.trim().toLowerCase();
 		const filtered = stories.value.filter((story) => {
@@ -223,6 +283,7 @@
 	};
 
 	onMounted(async () => {
+		canUseNativeShare.value = typeof navigator.share === "function";
 		if (!supabase.value) return;
 		isLoading.value = true;
 		const { data, error } = await supabase.value
@@ -825,6 +886,35 @@
 									>
 								</div>
 								<div class="story-actions">
+									<details class="share-menu">
+										<summary class="review-link share-menu-trigger">
+											<UIcon name="i-lucide-share-2" class="size-4" />
+											Share
+										</summary>
+										<div class="share-menu-panel">
+											<button
+												v-if="canUseNativeShare"
+												type="button"
+												@click="shareStory(story)"
+											>
+												<UIcon name="i-lucide-send" class="size-4" />
+												More options
+											</button>
+											<button type="button" @click="copyStoryLink(story)">
+												<UIcon name="i-lucide-copy" class="size-4" />
+												Copy link
+											</button>
+											<a
+												v-for="link in getStoryShareLinks(story)"
+												:key="link.label"
+												:href="link.href"
+												target="_blank"
+												rel="noopener noreferrer"
+											>
+												{{ link.label }}
+											</a>
+										</div>
+									</details>
 									<button
 										class="review-link read-notes-link"
 										@click="toggleReviewNotes(story)"
@@ -1801,6 +1891,47 @@
 		display: flex;
 		align-items: center;
 		gap: 16px;
+	}
+	.share-menu {
+		position: relative;
+	}
+	.share-menu-trigger {
+		list-style: none;
+		cursor: pointer;
+	}
+	.share-menu-trigger::-webkit-details-marker {
+		display: none;
+	}
+	.share-menu-panel {
+		position: absolute;
+		z-index: 10;
+		right: 0;
+		bottom: calc(100% + 8px);
+		display: grid;
+		min-width: 150px;
+		padding: 5px;
+		border: 1px solid var(--color-line);
+		border-radius: 8px;
+		background: var(--color-paper);
+		box-shadow: 0 8px 24px rgb(23 59 61 / 14%);
+	}
+	.share-menu-panel a,
+	.share-menu-panel button {
+		display: flex;
+		align-items: center;
+		gap: 9px;
+		padding: 8px 10px;
+		border-radius: 5px;
+		color: var(--color-ink-soft);
+		font-size: 10px;
+		text-align: left;
+		white-space: nowrap;
+		cursor: pointer;
+	}
+	.share-menu-panel a:hover,
+	.share-menu-panel button:hover {
+		color: var(--color-ink);
+		background: var(--color-teal-light);
 	}
 	.read-notes-link {
 		color: #8a9690;
