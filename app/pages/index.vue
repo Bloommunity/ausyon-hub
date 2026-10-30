@@ -204,6 +204,23 @@
 			.slice(0, 3),
 	);
 	const initials = (author: string) => author.slice(0, 1).toUpperCase();
+	const getAuType = (story: Story) =>
+		auTypes.find((type) =>
+			story.tags.some((tag) => {
+				const normalizedTag = tag.toLowerCase();
+				const normalizedType = type.toLowerCase();
+				return (
+					normalizedTag === normalizedType ||
+					normalizedTag.startsWith(`${normalizedType} `)
+				);
+			}),
+		);
+	const getOtherStoryTags = (story: Story) => {
+		const auType = getAuType(story);
+		return story.tags.filter(
+			(tag) => !auType || tag.toLowerCase() !== auType.toLowerCase(),
+		);
+	};
 
 	onMounted(async () => {
 		if (!supabase.value) return;
@@ -683,32 +700,51 @@
 
 				<div class="filter-row">
 					<div class="filter-groups">
-						<div class="filter-group" role="group" aria-label="Filter by platform">
-							<span class="filter-group-label">Platform</span>
-							<div class="platform-filters">
-								<button
-									v-for="filter in platformFilters"
-									:key="filter.value"
-									class="filter-chip"
-									:class="{ 'filter-chip-active': activeFilter === filter.value }"
-									@click="activeFilter = filter.value"
+						<div class="filter-group">
+							<label class="filter-group-label" for="platform-filter"
+								>Platform</label
+							>
+							<div class="filter-select-wrap">
+								<select
+									id="platform-filter"
+									v-model="activeFilter"
+									class="filter-select"
 								>
-									{{ filter.label }}
-								</button>
+									<option
+										v-for="filter in platformFilters"
+										:key="filter.value"
+										:value="filter.value"
+									>
+										{{ filter.label }}
+									</option>
+								</select>
+								<UIcon
+									name="i-lucide-chevron-down"
+									class="filter-select-icon size-3.5"
+									aria-hidden="true"
+								/>
 							</div>
 						</div>
-						<div class="filter-group" role="group" aria-label="Filter by AU type">
-							<span class="filter-group-label">AU type</span>
-							<div class="platform-filters">
-								<button
-									v-for="type in ['Everything', ...auTypes]"
-									:key="type"
-									class="filter-chip"
-									:class="{ 'filter-chip-active': activeAuType === type }"
-									@click="activeAuType = type"
+						<div class="filter-group">
+							<label class="filter-group-label" for="au-type-filter"
+								>AU type</label
+							>
+							<div class="filter-select-wrap">
+								<select
+									id="au-type-filter"
+									v-model="activeAuType"
+									class="filter-select"
 								>
-									{{ type === "Everything" ? "All types" : type }}
-								</button>
+									<option value="Everything">All types</option>
+									<option v-for="type in auTypes" :key="type" :value="type">
+										{{ type }}
+									</option>
+								</select>
+								<UIcon
+									name="i-lucide-chevron-down"
+									class="filter-select-icon size-3.5"
+									aria-hidden="true"
+								/>
 							</div>
 						</div>
 					</div>
@@ -759,7 +795,14 @@
 									/></a>
 									<p class="story-summary">{{ story.summary }}</p>
 									<div class="story-tags">
-										<span v-for="tag in story.tags" :key="tag">{{ tag }}</span>
+										<span v-if="getAuType(story)" class="story-au-type">
+											AU type · {{ getAuType(story) }}
+										</span>
+										<span
+											v-for="tag in getOtherStoryTags(story)"
+											:key="tag"
+											>{{ tag }}</span
+										>
 									</div>
 								</div>
 								<div class="story-aside">
@@ -1556,29 +1599,35 @@
 		font-weight: 700;
 		white-space: nowrap;
 	}
-	.platform-filters {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 7px;
+	.filter-select-wrap {
+		position: relative;
 	}
-	.filter-chip {
-		padding: 7px 12px;
-		border: 1px solid transparent;
+	.filter-select {
+		appearance: none;
+		padding: 7px 30px 7px 12px;
+		border: 1px solid var(--color-line);
 		border-radius: 99px;
-		color: #788580;
-		background: transparent;
+		color: var(--color-ink);
+		background: var(--color-paper);
 		font-size: 10px;
 		font-weight: 600;
-		transition: 0.18s ease;
+		cursor: pointer;
+		transition: border-color 0.18s ease, background-color 0.18s ease;
 	}
-	.filter-chip:hover {
-		border-color: #dcd5c7;
-		color: var(--color-ink);
+	.filter-select:hover {
+		border-color: #b8c9c1;
 	}
-	.filter-chip-active {
-		border-color: #d5e2dc;
-		color: #276c68;
-		background: #e6eee8;
+	.filter-select:focus-visible {
+		outline: 2px solid var(--color-teal);
+		outline-offset: 2px;
+	}
+	.filter-select-icon {
+		position: absolute;
+		top: 50%;
+		right: 10px;
+		color: #788580;
+		pointer-events: none;
+		transform: translateY(-50%);
 	}
 	.results-label {
 		color: #9aa39c;
@@ -1708,6 +1757,11 @@
 		background: #f0eee6;
 		font-size: 8px;
 		font-weight: 600;
+	}
+	.story-tags .story-au-type {
+		color: #276c68;
+		background: #e6eee8;
+		font-weight: 700;
 	}
 	.story-aside {
 		display: flex;
@@ -2273,10 +2327,6 @@
 			flex-direction: column;
 			justify-content: center;
 			padding: 11px 0;
-		}
-		.filter-chip {
-			padding: 6px 10px;
-			font-size: 9px;
 		}
 		.results-label {
 			display: none;

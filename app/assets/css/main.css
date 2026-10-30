@@ -126,20 +126,6 @@ html.dark .sort-control select {
   color: var(--color-ink);
 }
 
-html.dark .filter-chip {
-  color: #adbbb5;
-}
-
-html.dark .filter-chip:hover {
-  border-color: #46615b;
-}
-
-html.dark .filter-chip-active {
-  border-color: #39615b;
-  color: #a4d5c7;
-  background: #203d39;
-}
-
 html.dark .story-card {
   border-color: #2b4140;
   background: rgb(24 42 42 / 82%);
@@ -175,6 +161,11 @@ html.dark .reader-note p {
 html.dark .story-tags span {
   color: #b0c2ba;
   background: #263a38;
+}
+
+html.dark .story-tags .story-au-type {
+  color: #a4d5c7;
+  background: #203d39;
 }
 
 html.dark .story-footer,
